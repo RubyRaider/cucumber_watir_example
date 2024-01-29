@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+require 'tmpdir'
+require_relative '../../helpers/allure_helper'
+require_relative '../../helpers/browser_helper'
+
+include BrowserHelper
+
+Before do
+  browser.window.maximize
+end
+
+After do |scenario|
+  Dir.mktmpdir do |temp_folder|
+    screenshot = browser.screenshot.save("#{temp_folder}/#{scenario.name}.png")
+    AllureHelper.add_screenshot(scenario.name, screenshot)
+  end
+  browser.quit
+end
